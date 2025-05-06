@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+<style>
+body, html { margin:0; padding:0; height:100%; font-family:'Poppins',sans-serif; display:flex; flex-direction:column; transition:background 1s; }
+.header, .footer { color:white; display:flex; justify-content:center; align-items:center; padding:15px; }
+.header .title { font-size:32px; font-weight:600; }
+.footer { justify-content:space-around; position:fixed; bottom:0; width:100%; height:60px; background:#f2f2f2; }
+.icon { font-size:24px; padding:10px; cursor:pointer; border-radius:50%; transition:transform 0.3s; }
+.icon.active { background:rgba(0,0,0,0.2); transform:scale(1.2); }
+.balance-section { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px; }
+.balance-card { background: rgba(255,255,255,0.8); padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin-bottom:20px; width:80%; max-width:300px; }
+.balance-card h3 { margin:0; font-size:18px; color:#555; }
+.balance-card .balance { font-size:36px; font-weight:600; margin-top:10px; }
+button { margin:10px; padding:12px 20px; border:none; border-radius:10px; background:#6a0dad; color:white; cursor:pointer; transition:box-shadow 0.3s; width:80%; max-width:300px; }
+button:hover { box-shadow:0 4px 8px rgba(0,0,0,0.3); }
+</style>
+</head>
+<body>
+<div class="header"><div class="title">Crisis Exchange</div></div>
+<div class="balance-section">
+    <div class="balance-card">
+        <h3>Current Balance</h3>
+        <div class="balance" id="balance-amount">0 minutes</div>
+    </div>
+    <button onclick="go('addmoney.html')">➕ Add Time by helping others</button>
+    <button onclick="go('spentmoney.html')">🕒 Spend Time by getting helped by others</button>
+</div>
+<div class="footer">
+    <div class="icon active" onclick="go('home.html')">🏠</div>
+    <div class="icon" onclick="go('schedule.html')">📅</div>
+    <div class="icon" onclick="go('transaction.html')">⏰</div>
+</div>
+<script>
+function go(url){location.href=url;}
+function updateBalance(){
+    let total = parseInt(localStorage.getItem('totalBalance')) || 0;
+    document.getElementById('balance-amount').textContent = `${total} minutes`;
+    adjustBackground(total);
+}
+function adjustBackground(total){
+    let steps = Math.min(Math.floor(total / 5), 25);
+    let shade = 255 - steps * 8;
+    document.body.style.background = `linear-gradient(to top, #fff, rgb(${shade},${shade-40},${shade}), rgb(${shade-80},0,${shade}))`;
+}
+window.onload = updateBalance;
+</script>
+</body>
+</html>

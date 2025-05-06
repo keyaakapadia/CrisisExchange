@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spend Time</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+<style>
+body, html {
+    margin:0; padding:0; height:100%;
+    font-family:'Poppins',sans-serif;
+    display:flex; flex-direction:column;
+    transition:background 1s;
+}
+.header, .footer {
+    display:flex; justify-content:center; align-items:center; padding:15px;
+}
+.header .title {
+    font-size:32px; font-weight:600; color: white; }
+
+.footer {
+    justify-content:space-around; position:fixed; bottom:0; width:100%; height:60px;
+    background:#f2f2f2;
+}
+.icon {
+    font-size:24px; padding:10px; cursor:pointer;
+    border-radius:50%; transition:transform 0.3s;
+}
+.icon.active {
+    background:rgba(0,0,0,0.2); transform:scale(1.2);
+}
+.switch {
+    display:flex; justify-content:center; margin:10px;
+}
+.switch button {
+    padding:10px 20px; margin:0 5px; border:none; border-radius:20px;
+    background:#d9c6f5; color:#5a189a; cursor:pointer;
+}
+.switch button.active {
+    background:#5a189a; color:white;
+}
+.section {
+    flex:1; overflow-y:auto; padding:20px;
+    display:flex; flex-direction:column; align-items:center;
+}
+.task {
+    background:#eee; margin:10px; padding:12px;
+    border-radius:10px; width:80%; max-width:400px;
+}
+.task:hover {
+    background:#ddd;
+}
+.task .info {
+    display:flex; justify-content:space-between;
+}
+.task .small {
+    font-size:12px; color:#555; margin-top:5px;
+}
+.custom-task-box {
+    background:#eee; margin:20px 10px; padding:12px;
+    border-radius:10px; width:80%; max-width:400px;
+    display:flex; flex-direction:column; align-items:center;
+}
+.custom-task-box input, .custom-task-box button {
+    width:90%; margin:5px 0; padding:10px;
+    border:none; border-radius:5px;
+}
+.custom-task-box button {
+    background:#6a0dad; color:white; cursor:pointer;
+}
+.custom-task-box button:hover {
+    background:#5a189a;
+}
+</style>
+</head>
+<body>
+<div class="header"><div class="title">Crisis Exchange</div></div>
+<div class="switch">
+    <button onclick="go('addmoney.html')">➕ Add</button>
+    <button class="active" onclick="go('spentmoney.html')">🕒 Spend</button>
+</div>
+<div class="section" id="task-section">
+    <div id="task-list"></div>
+
+    <div class="custom-task-box">
+        <strong>➕ Add Custom Task</strong>
+        <input id="title" placeholder="Task name (e.g., Help Alex)">
+        <input id="minutes" type="number" placeholder="Minutes">
+        <input id="date" type="date">
+        <input id="time" placeholder="Time">
+        <button onclick="addCustom()">Add Task</button>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="icon" onclick="go('home.html')">🏠</div>
+    <div class="icon" onclick="go('schedule.html')">📅</div>
+    <div class="icon" onclick="go('transaction.html')">⏰</div>
+</div>
+
+<script>
+const presetTasks = [
+    { title: 'Help Alex pick up Felix', minutes: -30, date: 'Today', time: '3–4 PM' },
+    { title: 'Borrow laptop from Sam', minutes: -20, date: 'Tomorrow', time: '10–11 AM' },
+    { title: 'Ride to Maya’s place', minutes: -45, date: 'Friday', time: '1–2 PM' }
+];
+
+function renderTasks(){
+    const list = document.getElementById('task-list');
+    list.innerHTML = '';
+    presetTasks.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'task';
+        div.innerHTML = `<div class="info"><strong>${t.title}</strong><span>${t.minutes} min</span></div>
+                         <div class="info"><span>${t.date}</span><span>${t.time}</span></div>`;
+        div.onclick = () => addToSchedule(t);
+        list.appendChild(div);
+    });
+}
+
+function addCustom(){
+    const t = {
+        title: document.getElementById('title').value,
+        minutes: -Math.abs(parseInt(document.getElementById('minutes').value)),
+        date: document.getElementById('date').value,
+        time: document.getElementById('time').value
+    };
+    addToSchedule(t);
+}
+
+function addToSchedule(t){
+    const scheduled = JSON.parse(localStorage.getItem('scheduledTasks')) || [];
+    scheduled.push(t);
+    localStorage.setItem('scheduledTasks', JSON.stringify(scheduled));
+    location.href = 'schedule.html';
+}
+
+function go(url){ location.href = url; }
+
+function adjustBackground(){
+    let total = parseInt(localStorage.getItem('totalBalance')) || 0;
+    let steps = Math.min(Math.floor(total / 5), 25);
+    let shade = 255 - steps * 8;
+    document.body.style.background = `linear-gradient(to top, #fff, rgb(${shade},${shade-40},${shade}), rgb(${shade-80},0,${shade}))`;
+}
+
+window.onload = () => { renderTasks(); adjustBackground(); };
+</script>
+</body>
+</html>
